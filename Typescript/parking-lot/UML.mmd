@@ -1,0 +1,69 @@
+classDiagram
+    class ParkingLot {
+      +id: string
+      +name: string
+      +levels: Level[]
+      +open(): void
+      +close(): void
+    }
+
+    class Level {
+      +id: string
+      +levelNumber: number
+      +spots: ParkingSpot[]
+      +getAvailableSpots(SpotType): number
+    }
+
+    class ParkingSpot {
+      +id: string
+      +spotType: SpotType
+      +isOccupied: boolean
+      +park(vehicle: Vehicle): Ticket
+      +unpark(): void
+    }
+
+    class Vehicle {
+      +id: string
+      +licensePlate: string
+      +vehicleType: VehicleType
+    }
+
+    class Ticket {
+      +id: string
+      +vehicleId: string
+      +spotId: string
+      +entryTime: Date
+      +exitTime?: Date
+      +computeFare(): number
+    }
+
+    class Gate {
+      +id: string
+      +type: GateType
+      +processEntry(vehicle: Vehicle): Ticket
+      +processExit(ticketId: string): Receipt
+    }
+
+    class ParkingManager {
+      +allocateSpot(vehicle: Vehicle): ParkingSpot
+      +releaseSpot(ticket: Ticket): number
+    }
+
+    class PricingPolicy {
+      <<interface>>
+      +compute(entry: Date, exit: Date): number
+    }
+
+    class SpotAllocator {
+      <<interface>>
+      +allocate(levels: Level[], vehicle: Vehicle): ParkingSpot
+    }
+
+    ParkingLot "1" --> "*" Level
+    Level "1" --> "*" ParkingSpot
+    ParkingSpot ..> Vehicle : holds
+    Ticket --> Vehicle
+    Ticket --> ParkingSpot
+    Gate --> ParkingManager
+    ParkingManager ..|> PricingPolicy
+    ParkingManager ..|> SpotAllocator

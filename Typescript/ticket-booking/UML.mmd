@@ -1,0 +1,49 @@
+classDiagram
+    class Theater {
+      +id: string
+      +name: string
+      +screens: Screen[]
+    }
+    class Screen {
+      +id: string
+      +layout: Seat[]
+      +getSeat(seatId): Seat
+    }
+    class Seat {
+      +id: string
+      +row: string
+      +number: number
+      +type: SeatType
+    }
+    class Show {
+      +id: string
+      +movieId: string
+      +screenId: string
+      +startTime: Date
+      +pricePolicy: PricePolicy
+      +getAvailableSeats(): number
+    }
+    class Booking {
+      +id: string
+      +userId: string
+      +showId: string
+      +seats: string[]
+      +status: BookingStatus
+      +createdAt: Date
+    }
+    class SeatLockManager {
+      <<interface>>
+      +holdSeats(showId, seatIds, ttl): HoldToken
+      +confirmHold(token): boolean
+      +releaseHold(token): boolean
+    }
+    class PaymentService {
+      +charge(paymentInfo): PaymentResult
+    }
+    Booking --> Show
+    Booking --> Seat
+    Booking --> User
+    Show --> Screen
+    Screen --> Seat
+    BookingService ..> SeatLockManager
+    BookingService ..> PaymentService

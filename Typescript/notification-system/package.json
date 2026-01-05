@@ -1,0 +1,22 @@
+{
+  "name": "notification-system",
+  "version": "1.0.0",
+  "description": "A production-ready notification system supporting:\r - Email, SMS, Push\r - Async dispatch\r - Retries with backoff\r - Idempotent delivery",
+  "main": "index.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

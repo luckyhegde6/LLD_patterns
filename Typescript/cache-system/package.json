@@ -1,0 +1,22 @@
+{
+  "name": "cache-system",
+  "version": "1.0.0",
+  "description": "```\r  cache-system/\r │   ├── src/\r │   │   ├── core/\r │   │   │   ├── Cache.ts\r │   │   │   ├── CacheEntry.ts\r │   │   │   └── CacheResult.ts\r │   │   ├── policies/\r │   │   │   ├── EvictionPolicy.ts\r │   │   │   ├── LRUPolicy.ts\r │   │   │   └── LFUPolicy.ts\r │   │   ├── store/\r │   │   │   └── InMemoryStore.ts\r │   │   └── index.ts\r │   ├── tests/\r │   │   ├── lru.test.ts\r │   │   ├── lfu.test.ts\r │   │   └── ttl.test.ts\r │   ├── README.md\r │   ├── DESIGN.md\r │   ├── INTERVIEW.md\r │   └── package.json\r ```",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+ "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

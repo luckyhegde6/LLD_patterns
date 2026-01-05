@@ -1,0 +1,22 @@
+{
+  "name": "logger-framework",
+  "version": "1.0.0",
+  "description": "A simple, extensible logging framework with:\r - Async dispatch\r - Log levels\r - Multiple sinks",
+  "main": "index.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
