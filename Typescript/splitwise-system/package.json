@@ -1,0 +1,22 @@
+{
+  "name": "splitwise-system",
+  "version": "1.0.0",
+  "description": "Implements:\r - Expense sharing\r - Ledger-based accounting\r - Equal & exact splits",
+  "directories": {
+    "test": "tests"
+  },
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

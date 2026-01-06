@@ -18,20 +18,54 @@
 
 # Tier 2 (very strong signals)
 
-- [ ] Elevator System (state machines + scheduling)
+- [x] Elevator System (state machines + scheduling)
 
-- [ ] Splitwise / Expense Sharing
+- [x] Splitwise / Expense Sharing
 
-- [ ] Distributed ID Generator (Snowflake-style)
+- [x] Distributed ID Generator (Snowflake-style)
 
-- [ ] URL Shortener (LLD only)
+- [x] URL Shortener (LLD only)
 
 # Tier 3 (advanced / leadership signal)
 
-- [ ] Message Queue (Kafka-lite)
+- [x] Message Queue (Kafka-lite)
 
-- [ ] API Gateway
+- [x] API Gateway
 
-- [ ] Feature Flag System
+- [x] Feature Flag System
 
-- [ ] Circuit Breaker + Retry Library
+- [x] Circuit Breaker + Retry Library
+
+# Detailed Evaluation
+
+## Parking System
+
+## Ticket Booking System
+
+## Rate Limiter (Token Bucket + Sliding Window)
+
+## Cache System (LRU + LFU + TTL)
+
+## Logger Framework (async, levels, sinks)
+
+## Notification System (Email/SMS/Push with retries)
+
+## Task Scheduler / Cron System
+
+## Payment Processing (LLD)
+
+## Elevator System (state machines + scheduling)
+
+## Splitwise / Expense Sharing
+
+## Distributed ID Generator (Snowflake-style)
+
+## URL Shortener (LLD only)
+
+## Message Queue (Kafka-lite)
+
+## API Gateway
+
+## Feature Flag System
+
+## Circuit Breaker + Retry Library
