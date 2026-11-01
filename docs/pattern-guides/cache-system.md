@@ -2,6 +2,12 @@
 
 **Problem:** Fast key-value access with eviction and expiry.
 
+## Visual walkthrough
+
+![Cache System visual walkthrough](../assets/cache-system-visual.svg)
+
+A hit avoids the source read. A miss loads the value, populates the cache with a TTL, and returns it; invalidation policy controls staleness.
+
 ## Clarifying questions
 - Local or distributed?
 - LRU/LFU/FIFO?
