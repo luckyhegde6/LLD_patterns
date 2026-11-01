@@ -1,37 +1,60 @@
-import { Store } from "../stores/Store";
 import { RateLimitResult } from "../core/RateLimitResult";
+import { Store } from "../stores/Store";
 
+export interface Clock {
+    now(): number;
+}
+
+export class SystemClock implements Clock {
+    now(): number {
+        return Date.now();
+    }
+}
+
+/**
+ * Token Bucket algorithm.
+ *
+ * The algorithm delegates state transition to the store so that each
+ * implementation can guarantee atomicity appropriate to its environment.
+ */
 export class TokenBucket {
     constructor(
-        private store: Store,
-        private capacity: number,
-        private refillRatePerSec: number
-    ) { }
+        private readonly store: Store,
+        private readonly capacity: number,
+        private readonly refillRatePerSec: number,
+        private readonly clock: Clock = new SystemClock(),
+        private readonly ttlMs = 60_000
+    ) {
+        if (!Number.isFinite(capacity) || capacity < 1) {
+            throw new Error("capacity must be a finite number >= 1");
+        }
+        if (!Number.isFinite(refillRatePerSec) || refillRatePerSec < 0) {
+            throw new Error("refillRatePerSec must be a finite number >= 0");
+        }
+        if (!Number.isFinite(ttlMs) || ttlMs <= 0) {
+            throw new Error("ttlMs must be a finite number > 0");
+        }
+    }
 
     async allow(key: string): Promise<RateLimitResult> {
-        const now = Date.now();
-        const bucketKey = `bucket:${key}`;
-        const lastRefillKey = `bucket:${key}:ts`;
-
-        const tokens = (await this.store.get(bucketKey)) ?? this.capacity;
-        const lastRefill = (await this.store.get(lastRefillKey)) ?? now;
-
-        const elapsed = (now - lastRefill) / 1000;
-        const newTokens = Math.min(
-            this.capacity,
-            tokens + elapsed * this.refillRatePerSec
-        );
-
-        if (newTokens < 1) {
-            return { allowed: false, remaining: 0, retryAfterMs: 1000 };
+        if (!key || !key.trim()) {
+            throw new Error("key must be a non-empty string");
         }
 
-        await this.store.set(bucketKey, newTokens - 1, 60000);
-        await this.store.set(lastRefillKey, now, 60000);
+        const decision = await this.store.consumeToken({
+            key: `bucket:${key}`,
+            capacity: this.capacity,
+            refillRatePerSec: this.refillRatePerSec,
+            nowMs: this.clock.now(),
+            ttlMs: this.ttlMs
+        });
 
         return {
-            allowed: true,
-            remaining: Math.floor(newTokens - 1)
+            allowed: decision.allowed,
+            remaining: decision.remaining,
+            ...(decision.retryAfterMs === undefined
+                ? {}
+                : { retryAfterMs: decision.retryAfterMs })
         };
     }
 }
