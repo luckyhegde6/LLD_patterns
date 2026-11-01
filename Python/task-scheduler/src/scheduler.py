@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from threading import RLock
+from threading import RLock, Event, Thread
 from typing import Any, Callable, Protocol
 import time
 
@@ -86,7 +86,7 @@ class WorkerManager:
     """Lifecycle controller for poll workers; deployment adapter supplies the loop."""
     def __init__(self,scheduler:Scheduler,handler:Callable[[Task],Any],worker_count=1):
         if worker_count<1: raise ValueError("worker_count must be >= 1")
-        self.scheduler=scheduler;self.handler=handler;self.worker_count=worker_count;self.running=False
+        self.scheduler=scheduler;self.handler=handler;self.worker_count=worker_count;self.running=False;self._stop=Event();self._thread=None
     def start(self): self.running=True
     def stop(self): self.running=False
     def poll_once(self,now):
