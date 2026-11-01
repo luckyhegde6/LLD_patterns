@@ -38,7 +38,7 @@ export class Worker {
                 task.lastError = error instanceof Error ? error.message : String(error);
                 task.leaseUntil = undefined;
 
-                if (task.attempts < task.maxAttempts && this.retry.canRetry(task.attempts)) {
+                if (task.attempts < task.maxAttempts) {
                     task.status = TaskStatus.PENDING;
                     task.runAt = this.retry.nextRunTime(task.attempts, this.clock.now());
                     this.store.update(task);
