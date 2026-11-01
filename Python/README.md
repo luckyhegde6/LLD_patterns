@@ -1,53 +1,36 @@
-# Python LLD Patterns
+# Python LLD Patterns — Agentic Systems & FDE Track
 
-Python implementations of the low-level design exercises in this repository.
+Python implementations complement the existing `Typescript/` solutions. Mirror each TypeScript problem's requirements, component boundaries, design notes, and tests before translating syntax; use idiomatic Python (Protocols/ABC, dataclasses, enums, dependency injection, pytest).
 
-## Goals
-- Keep each problem independently runnable and testable.
-- Prefer small, cohesive classes and explicit interfaces.
-- Demonstrate SOLID principles and relevant design patterns without overengineering.
-- Include tests and concise interview notes for every implementation.
+## Design bar
+- Keep domain logic framework-agnostic; integrations (HTTP, DB, model provider, MCP) are adapters.
+- Treat model output as untrusted input. Enforce schemas, authorization, budgets, timeouts, idempotency, auditability, and human approval for consequential actions.
+- Distinguish local-demo behavior from production/distributed guarantees.
+- Test failure paths, not just happy paths.
 
 ## Structure
-
-```text
-Python/
-  README.md
-  requirements-dev.txt
-  cache-system/
-    README.md
-    DESIGN.md
-    INTERVIEW.md
-    src/
-      __init__.py
-      cache.py
-    tests/
-      test_cache.py
-```
+Each problem follows the TypeScript layout: README, OVERVIEW or DESIGN, INTERVIEW, src, tests; add whiteboard and beginner explanations when useful.
 
 ## Setup
-
-From the repository root:
-
 ```bash
 python -m venv .venv
-# Windows PowerShell: .venv\\Scripts\\Activate.ps1
+# Windows: .venv\\Scripts\\activate
 # macOS/Linux: source .venv/bin/activate
 pip install -r Python/requirements-dev.txt
-python -m pytest Python
+python -m pytest Python -v
 ```
 
-The examples use the Python standard library at runtime. Pytest is used for tests.
+## FDE-oriented sequence
+1. Cache system — policy/store separation, TTL, LRU/LFU, read-through.
+2. Rate limiter — protect model/tool APIs, tenant quotas, token budgets.
+3. Agent Tool Runtime — allowlisted tools, validated arguments, policy checks, timeouts, audit.
+4. Task scheduler — durable jobs, retries, idempotency, distributed claims.
+5. API gateway — auth, routing, quotas, observability, model/tool endpoints.
+6. Circuit breaker — protect flaky model providers and external APIs.
+7. RAG ingestion — chunking, embedding adapter, retrieval interfaces, freshness.
+8. Agent workflow orchestrator — state, checkpoints, approval gates, resumability.
+9. Notification system — human-in-the-loop approvals and delivery.
+10. Ticket booking / payment / parking lot — transactions and concurrency.
 
-## Implementation order
-
-1. Cache system (LRU, LFU, TTL)
-2. Rate limiter (fixed window, sliding window, token bucket)
-3. Logger framework
-4. Notification system
-5. Task scheduler
-6. Parking lot
-7. Ticket booking
-8. API gateway and circuit breaker
-
-Each problem should cover requirements, domain model, interfaces, implementation, tests, trade-offs, and interview discussion.
+## FDE interview lens
+For every project explain customer problem and success metric; requirements and constraints; integration surface; failure modes; security/privacy; latency/cost; rollout and observability; adoption feedback; trade-offs; and production operations.
