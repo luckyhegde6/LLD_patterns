@@ -1,11 +1,7 @@
-from src.gateway import ApiGateway, Request, Response, Route, Router, RequirePrincipal, RequestContext
+from src.gateway import *
 
-def test_routes_and_middleware():
-    router=Router(); router.add(Route("GET","/v1/",lambda c: Response(200,{"principal":c.principal})))
-    gateway=ApiGateway(router,[RequirePrincipal()])
-    assert gateway.handle(Request("GET","/v1/items")).status == 401
-    response=gateway.handle(Request("GET","/v1/items",{"authorization":"Bearer user-1"}))
-    assert response.status == 200 and response.body["principal"] == "user-1"
-
-def test_unknown_route():
-    assert ApiGateway(Router()).handle(Request("GET","/missing")).status == 404
+def test_auth_and_routing():
+ r=Router(); r.add(Route('GET','/api',lambda c:Response(200,{'user':c.principal}))); g=ApiGateway(r,[RequireBearer()])
+ assert g.handle(Request('GET','/api/x')).status==401
+ assert g.handle(Request('GET','/api/x',{'authorization':'Bearer demo'})).body=={'user':'demo'}
+def test_404(): assert ApiGateway(Router()).handle(Request('GET','/missing')).status==404
