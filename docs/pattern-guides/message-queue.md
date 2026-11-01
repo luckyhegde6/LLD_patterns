@@ -2,6 +2,12 @@
 
 **Problem:** Deliver messages with defined ordering, ack and retry semantics.
 
+## Visual walkthrough
+
+![Message Queue visual walkthrough](../assets/message-queue-visual.svg)
+
+A message remains pending until acknowledged. Failures trigger retry or dead-letter routing; delivery guarantees and idempotency must be explicit.
+
 ## Clarifying questions
 - Delivery guarantee?
 - Ordering scope?
