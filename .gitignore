@@ -137,3 +137,52 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Python bytecode and interpreter caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.tox/
+.nox/
+.venv/
+venv/
+ENV/
+env/
+.python-version.local
+
+# Python packaging/build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+pip-wheel-metadata/
+
+# Test and coverage outputs
+.coverage
+.coverage.*
+htmlcov/
+.nyc_output/
+coverage/
+junit*.xml
+pytest-report/
+test-results/
+test-results.xml
+playwright-report/
+allure-results/
+allure-report/
+
+# Generated reports and temporary artifacts
+reports/
+artifacts/
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
