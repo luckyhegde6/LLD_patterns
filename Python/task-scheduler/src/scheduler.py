@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from threading import RLock, Event, Thread\nfrom concurrent.futures import ThreadPoolExecutor
+from threading import RLock, Event, Thread
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, Protocol
 import time
 
@@ -102,4 +103,6 @@ class WorkerManager:
         self._thread=None
     def poll_once(self,now):
         if not self.running:return []
-        def poll(index): return self.scheduler.run_due(now,self.handler,worker_id=f"managed-worker-{index}",limit=1)\n        with ThreadPoolExecutor(max_workers=self.worker_count) as pool:\n            return [task_id for batch in pool.map(poll,range(self.worker_count)) for task_id in batch]
+        def poll(index): return self.scheduler.run_due(now,self.handler,worker_id=f"managed-worker-{index}",limit=1)
+        with ThreadPoolExecutor(max_workers=self.worker_count) as pool:
+            return [task_id for batch in pool.map(poll,range(self.worker_count)) for task_id in batch]
