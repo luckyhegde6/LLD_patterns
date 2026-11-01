@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    participant A as Request A
+    participant B as Request B
+    participant DB as Database
+    par Both requests read availability
+      A->>DB: Read spot S (available)
+      DB-->>A: available
+    and
+      B->>DB: Read spot S (available)
+      DB-->>B: available
+    end
+    A->>DB: UPDATE S WHERE status = available
+    DB-->>A: 1 row updated
+    B->>DB: UPDATE S WHERE status = available
+    DB-->>B: 0 rows updated
+    Note over A,B: Only one request claims the spot
+    B->>DB: Find another spot or fail gracefully

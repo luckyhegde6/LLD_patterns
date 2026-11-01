@@ -1,0 +1,38 @@
+classDiagram
+    class ParkingLot {
+      +id: string
+      +park(vehicle): ParkingTicket
+      +unpark(ticketId): Money
+    }
+    class ParkingFloor {
+      +id: string
+      +findAvailableSpot(type): ParkingSpot
+    }
+    class ParkingSpot {
+      +id: string
+      +type: SpotType
+      +status: SpotStatus
+      +assign(vehicle): void
+      +release(): void
+    }
+    class Vehicle {
+      +registrationNumber: string
+      +type: VehicleType
+    }
+    class ParkingTicket {
+      +id: string
+      +entryTime: Instant
+      +exitTime: Instant
+      +close(at): void
+    }
+    class FeePolicy {
+      <<interface>>
+      +calculate(ticket, at): Money
+    }
+    class HourlyFeePolicy
+    ParkingLot "1" *-- "1..*" ParkingFloor
+    ParkingFloor "1" *-- "1..*" ParkingSpot
+    ParkingSpot "0..1" --> "1" Vehicle : occupied by
+    ParkingTicket "1" --> "1" Vehicle
+    ParkingLot --> FeePolicy
+    FeePolicy <|.. HourlyFeePolicy

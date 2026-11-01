@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    actor Driver
+    participant API as ParkingController
+    participant Service as ParkingService
+    participant Repo as ParkingRepository
+    participant Allocator as SpotAllocationPolicy
+    participant Spot as ParkingSpot
+    Driver->>API: park(vehicleDetails)
+    API->>Service: park(vehicle)
+    Service->>Repo: findAvailableSpots(vehicle.type)
+    Repo-->>Service: candidate spots
+    Service->>Allocator: chooseSpot(candidates, vehicle)
+    Allocator-->>Service: selected spot
+    Service->>Spot: assign(vehicle)
+    Spot-->>Service: assigned
+    Service->>Repo: saveSpotAndTicket(spot, ticket)
+    Repo-->>Service: persisted ticket
+    Service-->>API: ticket
+    API-->>Driver: 201 Created + ticket
