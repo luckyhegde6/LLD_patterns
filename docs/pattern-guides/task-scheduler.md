@@ -2,6 +2,12 @@
 
 **Problem:** Schedule and execute one-time/recurring tasks reliably.
 
+## Visual walkthrough
+
+![Task Scheduler visual walkthrough](../assets/task-scheduler-visual.svg)
+
+Claims need leases to recover from crashed workers. Execution is typically at-least-once, so handlers should be idempotent.
+
 ## Clarifying questions
 - Schedule types?
 - Timezone/DST?
