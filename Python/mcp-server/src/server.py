@@ -1,28 +1,36 @@
 """Minimal MCP stdio adapter exposing scheduler and tool-runtime operations."""
 from __future__ import annotations
-import json, sys, uuid
+import importlib.util, json, sys, uuid
 from pathlib import Path
 from typing import Any
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "task-scheduler"))
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "agent-tool-runtime"))
-from src.scheduler import Scheduler, Task, Status
-from src.runtime import ToolRuntime, ToolCall
+
+ROOT=Path(__file__).resolve().parents[2]
+def _load(name,path):
+    spec=importlib.util.spec_from_file_location(name,path)
+    module=importlib.util.module_from_spec(spec)
+    sys.modules[name]=module
+    spec.loader.exec_module(module)
+    return module
+_scheduler=_load("lld_scheduler_module",ROOT/"task-scheduler/src/scheduler.py")
+_runtime=_load("lld_runtime_module",ROOT/"agent-tool-runtime/src/runtime.py")
+Scheduler,Task,Status=_scheduler.Scheduler,_scheduler.Task,_scheduler.Status
+ToolRuntime,ToolCall=_runtime.ToolRuntime,_runtime.ToolCall
 
 TOOLS=[
  {"name":"scheduler.schedule","description":"Schedule a delayed task","inputSchema":{"type":"object","properties":{"taskId":{"type":"string"},"runAt":{"type":"number"},"payload":{},"priority":{"type":"integer"},"maxAttempts":{"type":"integer"}},"required":["taskId","runAt","payload"],"additionalProperties":False}},
  {"name":"scheduler.list","description":"List scheduled tasks","inputSchema":{"type":"object","properties":{},"additionalProperties":False}},
  {"name":"scheduler.run_due","description":"Execute due tasks once (reference handler returns payload)","inputSchema":{"type":"object","properties":{"now":{"type":"number"}},"required":["now"],"additionalProperties":False}},
  {"name":"runtime.tools.list","description":"List registered agent tools","inputSchema":{"type":"object","properties":{},"additionalProperties":False}},
- {"name":"runtime.tools.execute","description":"Execute a registered tool through policy and audit","inputSchema":{"type":"object","properties":{"name":{"type":"string"},"arguments":{"type":"object"},"actor":{"type":"string"},},"required":["name","arguments","actor"],"additionalProperties":False}}
+ {"name":"runtime.tools.execute","description":"Execute a registered tool through policy and audit","inputSchema":{"type":"object","properties":{"name":{"type":"string"},"arguments":{"type":"object"},"actor":{"type":"string"}},"required":["name","arguments","actor"],"additionalProperties":False}}
 ]
 class MCPAdapter:
- def __init__(self,scheduler:Scheduler,runtime:ToolRuntime,permission_resolver=None):self.scheduler=scheduler;self.runtime=runtime;self.permission_resolver=permission_resolver or (lambda actor:set())
+ def __init__(self,scheduler:Scheduler,runtime:ToolRuntime,permission_resolver=None):
+  self.scheduler=scheduler;self.runtime=runtime;self.permission_resolver=permission_resolver or (lambda actor:set())
  def handle(self,msg:dict[str,Any]):
   method=msg.get("method");params=msg.get("params") or {};req_id=msg.get("id")
   def result(value):return {"jsonrpc":"2.0","id":req_id,"result":value}
   def error(code,message):return {"jsonrpc":"2.0","id":req_id,"error":{"code":code,"message":message}}
-  if method=="initialize":
-   return result({"protocolVersion":"2025-11-25","capabilities":{"tools":{},"resources":{}},"serverInfo":{"name":"lld-agent-platform","version":"0.1.0"}})
+  if method=="initialize":return result({"protocolVersion":"2025-11-25","capabilities":{"tools":{},"resources":{}},"serverInfo":{"name":"lld-agent-platform","version":"0.1.0"}})
   if method=="notifications/initialized":return None
   if method=="ping":return result({})
   if method=="tools/list":return result({"tools":TOOLS})
@@ -56,11 +64,11 @@ def main():
  registry=_runtime.ToolRegistry()
  registry.register(_runtime.ToolSpec("echo","Return the supplied text",{"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":False},frozenset({"echo"}),lambda args:args["text"]))
  runtime=_runtime.ToolRuntime(registry,_runtime.AllowAllPolicy(),_runtime.InMemoryAuditSink())
- scheduler=Scheduler();adapter=MCPAdapter(scheduler,runtime,lambda actor:{"echo"} if actor=="demo-agent" else set())
+ adapter=MCPAdapter(Scheduler(),runtime,lambda actor:{"echo"} if actor=="demo-agent" else set())
  for line in sys.stdin:
   try:
    msg=json.loads(line);response=adapter.handle(msg)
    if response is not None:sys.stdout.write(json.dumps(response,separators=(",",":"))+"\n");sys.stdout.flush()
-  except Exception as exc:
-   sys.stdout.write(json.dumps({"jsonrpc":"2.0","id":None,"error":{"code":-32700,"message":str(exc)}})+"\n");sys.stdout.flush()
+  except Exception:
+   sys.stdout.write(json.dumps({"jsonrpc":"2.0","id":None,"error":{"code":-32700,"message":"parse error"}})+"\n");sys.stdout.flush()
 if __name__=="__main__":main()
