@@ -73,7 +73,7 @@ class Scheduler:
         for t in self.claim_due(now,limit,worker_id):
             try:
                 if t.id not in self.results: self.results[t.id]=handler(t)
-                t.status=Status.SUCCEEDED;done.append(t.id)
+                t.status=Status.SUCCEEDED;t.worker_id=None;t.lease_until=None;done.append(t.id)
             except Exception as e:
                 t.attempts+=1;t.last_error=f"{type(e).__name__}: {e}";t.worker_id=None;t.lease_until=None
                 if t.attempts<t.max_attempts:
