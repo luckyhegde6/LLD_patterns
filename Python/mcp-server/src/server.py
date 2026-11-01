@@ -1,7 +1,10 @@
 """Minimal MCP stdio adapter exposing scheduler and tool-runtime operations."""
 from __future__ import annotations
 import json, sys, uuid
+from pathlib import Path
 from typing import Any
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "task-scheduler"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "agent-tool-runtime"))
 from src.scheduler import Scheduler, Task, Status
 from src.runtime import ToolRuntime, ToolCall
 
