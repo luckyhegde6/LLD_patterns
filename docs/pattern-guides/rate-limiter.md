@@ -2,6 +2,12 @@
 
 **Problem:** Control request rate by identity and policy.
 
+## Visual walkthrough
+
+![Rate Limiter visual walkthrough](../assets/rate-limiter-visual.svg)
+
+The decision must be atomic for shared keys. The response includes remaining capacity or retry guidance; store outage behavior is a policy choice.
+
 ## Clarifying questions
 - Identity key?
 - Algorithm?
