@@ -32,7 +32,7 @@ class InMemoryAuditSink:
 def validate_schema(value,schema,path="$"):
     types={"object":dict,"array":list,"string":str,"integer":int,"number":(int,float),"boolean":bool,"null":type(None)}
     expected=schema.get("type")
-    if expected in types and (not isinstance(value,types[expected]) or (expected=="integer" and isinstance(value,bool))):raise ValueError(f"{path}: expected {expected}")
+    if expected in types and (not isinstance(value,types[expected]) or (expected in ("integer","number") and isinstance(value,bool))):raise ValueError(f"{path}: expected {expected}")
     if "enum" in schema and value not in schema["enum"]:raise ValueError(f"{path}: enum mismatch")
     if isinstance(value,dict):
         props=schema.get("properties",{})
