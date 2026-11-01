@@ -53,8 +53,10 @@ class MCPAdapter:
  @staticmethod
  def _task(t):return {"id":t.id,"runAt":t.run_at,"payload":t.payload,"priority":t.priority,"attempts":t.attempts,"maxAttempts":t.max_attempts,"status":t.status.value,"lastError":t.last_error,"workerId":t.worker_id,"leaseUntil":t.lease_until}
 def main():
- from src.runtime import ToolRegistry,AllowAllPolicy,InMemoryAuditSink
- scheduler=Scheduler();runtime=ToolRuntime(ToolRegistry(),AllowAllPolicy(),InMemoryAuditSink());adapter=MCPAdapter(scheduler,runtime)
+ registry=_runtime.ToolRegistry()
+ registry.register(_runtime.ToolSpec("echo","Return the supplied text",{"type":"object","properties":{"text":{"type":"string"}},"required":["text"],"additionalProperties":False},frozenset({"echo"}),lambda args:args["text"]))
+ runtime=_runtime.ToolRuntime(registry,_runtime.AllowAllPolicy(),_runtime.InMemoryAuditSink())
+ scheduler=Scheduler();adapter=MCPAdapter(scheduler,runtime,lambda actor:{"echo"} if actor=="demo-agent" else set())
  for line in sys.stdin:
   try:
    msg=json.loads(line);response=adapter.handle(msg)
