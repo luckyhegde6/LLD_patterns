@@ -1,56 +1,48 @@
-# How I Think About Rate Limiting (Interview Guide)
+# Rate Limiter — Senior-Level Interview Guide
 
-## Step 1: Clarify
-“What is the unit? User? IP? API key?”
-“What accuracy is required?”
+## Clarify first
 
-## Step 2: Choose Algorithm
-I start with Token Bucket because:
-- Allows bursts
-- Easy mental model
-- Widely used in industry
+- Is the quota per user, IP, API key, tenant, or endpoint?
+- Is the limit local to one process, regional, or global?
+- What are capacity, refill rate and request cost?
+- Is a burst allowed?
+- Should the system fail open or closed when Redis is unavailable?
+- What response headers and retry semantics are required?
 
-## Step 3: Concurrency
-This is NOT a CRUD problem.
-Atomicity matters → Redis + Lua.
+## Explain the model
 
-## Step 4: Failure Modes
-- Redis down → fail open or closed?
-- Clock skew → tolerate small drift
-- TTL expiry → safe auto-recovery
+A Token Bucket has:
+- **Capacity:** maximum number of stored tokens.
+- **Refill rate:** tokens added per second.
+- **Current tokens:** available request budget.
+- **Last refill time:** timestamp used to calculate elapsed refill.
 
-## Step 5: Evolution
-- Add headers: X-RateLimit-Remaining
-- Per-endpoint limits
-- Dynamic configs
+The store operation is atomic because two requests must not both observe the same final token and both consume it.
 
-## Why this design works
-- Simple core
-- Scales horizontally
-- Easy to test
-- Easy to explain
+## Explain the implementation
 
-# 🔥 Top 5 Rate Limiter Interview Questions (with how to answer)
+- `TokenBucket` validates configuration and delegates a single state transition.
+- `Clock` makes time deterministic in tests.
+- `Store` is a port; adapters implement atomic consumption.
+- `InMemoryStore` provides process-local atomicity.
+- `RedisStore` executes read/refill/consume/write in one Lua script.
 
-1️⃣ **Why Token Bucket over Sliding Window?**  
-> Token Bucket allows controlled bursts while maintaining average rate.
+## Senior trade-offs
 
-2️⃣ **How do you prevent race conditions?**  
-> Redis Lua scripts guarantee atomic check-and-update.
+- **In-memory vs Redis:** local speed versus shared quota correctness.
+- **Fail-open vs fail-closed:** availability versus abuse/security protection.
+- **Regional vs global:** latency and resilience versus exact global enforcement.
+- **Token Bucket vs Sliding Window:** controlled bursts versus a closer rolling-window quota.
+- **TTL:** bounds stale key lifetime but must be consistent with the refill policy.
 
-3️⃣ **What happens if Redis goes down?**  
-> Choose fail-open for availability or fail-closed for security.
+## Failure modes to discuss
 
-4️⃣ **How do you scale globally?**  
-> Regional Redis + eventual consistency, or per-region limits.
+- Redis timeout or failover.
+- Large forward or backward clock movement.
+- Hot keys and high-cardinality identities.
+- Policy updates while a bucket contains tokens.
+- Redis Cluster key placement and script execution topology.
 
-5️⃣ **How do you test correctness?**  
-> Unit tests for logic, concurrency tests, chaos tests for Redis failure.
+## Validation status
 
----
-
-## Where you are now
-You now have **three senior-grade LLD systems**:
-- Parking Lot
-- Ticket Booking (Redis + Lua)
-- Rate Limiter
+Unit tests cover in-memory refill, capacity, identity isolation, backward clock movement, invalid input and concurrent calls in a single process. Redis integration and cross-instance tests must still be run against a real Redis service; do not claim those guarantees are verified until CI executes them.
