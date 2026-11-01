@@ -1,12 +1,10 @@
 # Task Scheduler (Python)
 
-Task lifecycle with due-time execution, retry/backoff and idempotency.
+Delayed jobs, priority ordering, due-task claims with leases, bounded exponential retries, retained failed tasks as dead-letter records, worker lifecycle management and lock adapters.
 
-## Run tests
-
-From repository root:
+Run from repository root:
 ```bash
 python -m pytest Python/task-scheduler/tests -v
 ```
 
-Educational in-memory reference implementation. It is not a production deployment. Read DESIGN.md and INTERVIEW.md for boundaries and trade-offs.
+The in-memory store is process-local. `RedisLockManager` demonstrates token-owned Redis locks, but production distributed correctness also requires atomic durable claims, lease renewal/fencing, idempotent handlers and observability.
