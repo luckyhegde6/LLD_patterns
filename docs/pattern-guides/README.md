@@ -1,6 +1,6 @@
 # Pattern-by-pattern LLD interview guides
 
-Each system guide includes clarifying questions, entity discovery, class responsibilities, Mermaid class and sequence diagrams, SOLID, pattern rationale, edge cases/tests, senior-level trade-offs and an interview wrap-up.
+Each system guide includes a visual walkthrough (SVG) with a short explanation, clarifying questions, entity discovery, class responsibilities, Mermaid class and sequence diagrams, SOLID, pattern rationale, edge cases/tests, senior-level trade-offs and an interview wrap-up.
 
 | System | Guide |
 |---|---|
