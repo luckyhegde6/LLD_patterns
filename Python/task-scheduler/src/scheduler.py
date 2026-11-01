@@ -87,8 +87,19 @@ class WorkerManager:
     def __init__(self,scheduler:Scheduler,handler:Callable[[Task],Any],worker_count=1):
         if worker_count<1: raise ValueError("worker_count must be >= 1")
         self.scheduler=scheduler;self.handler=handler;self.worker_count=worker_count;self.running=False;self._stop=Event();self._thread=None
-    def start(self): self.running=True
-    def stop(self): self.running=False
+    def start(self,poll_interval=0.25):
+        if poll_interval<=0: raise ValueError("poll_interval must be positive")
+        if self.running:return
+        self.running=True;self._stop.clear()
+        def loop():
+            while not self._stop.wait(poll_interval):
+                self.poll_once(time.time())
+        self._thread=Thread(target=loop,name="task-scheduler-worker-manager",daemon=True)
+        self._thread.start()
+    def stop(self,timeout=2):
+        self.running=False;self._stop.set()
+        if self._thread:self._thread.join(timeout)
+        self._thread=None
     def poll_once(self,now):
         if not self.running:return []
         return self.scheduler.run_due(now,self.handler,worker_id="managed-worker",limit=self.worker_count)
