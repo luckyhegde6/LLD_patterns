@@ -37,5 +37,7 @@ export class ToolRuntime {
  try{const value=await Promise.race([Promise.resolve(spec.handler(call.arguments)),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error("tool timed out")),spec.timeoutMs??10000);})]);if(timer)clearTimeout(timer);this.audit.write({callId:call.id,tool:call.name,actor:call.actor,outcome:"success",attempt,durationMs:Date.now()-start,at:new Date().toISOString()});return {ok:true,value};}
  catch(e){if(timer)clearTimeout(timer);last=e instanceof Error?e.message:"tool execution failed";const outcome=last==="tool timed out"?"timeout":"error";this.audit.write({callId:call.id,tool:call.name,actor:call.actor,outcome,attempt,durationMs:Date.now()-start,error:last,at:new Date().toISOString()});if(attempt<(spec.maxAttempts??1))await new Promise(r=>setTimeout(r,Math.min(250*2**(attempt-1),2000)));}}
  return {ok:false,error:last};}
+ registryList(){return this.registry.list();}
+ auditRecords(){return (this.audit as InMemoryAuditSink).records ?? [];}
  private finish(call:ToolCall,outcome:string,attempt:number,durationMs:number,error:string){this.audit.write({callId:call.id,tool:call.name,actor:call.actor,outcome,attempt,durationMs,error,at:new Date().toISOString()});return {ok:false,error};}
 }
