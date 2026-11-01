@@ -1,78 +1,37 @@
-# LLD_patterns
+# LLD Patterns — Interview Learning Repository
 
-Low-level design patterns implemented in TypeScript and Python, with design notes and interview guidance.
+A hands-on catalogue of Low-Level Design patterns and systems in TypeScript and Python. The repository helps engineers model a problem, explain design decisions, implement core behaviour, and evolve solutions toward production concerns.
 
-## Get the PR #2 changes locally
+## Start here
 
-The Python pattern suite, root `package.json`, and GitHub Actions workflow are on the feature branch until PR #2 is merged.
+1. **[LLD Interview Problem-Solving Playbook](docs/LLD_INTERVIEW_PROBLEM_SOLVING.md)** — clarifying questions, entity discovery, relationships, class design, SOLID, patterns, edge cases, class and sequence diagrams.
+2. **[Interview Guide](INTERVIEW_GUIDE.md)** — interview signals, communication strategy, and system-specific talking points.
+3. **[60-minute Mock Interview](GUIDE.md)** — a sample senior-level interview flow.
+4. **[Master Cheat Sheet](MASTER_LLD_CHEAT_SHEET_ONE_PAGE.md)** — rapid revision.
 
-```powershell
-git fetch origin
-git switch feat/python-lld-patterns-suite
-git pull
-```
+## Repository structure
 
-If the branch does not exist locally yet:
+- `Typescript/`: TypeScript implementations and tests.
+- `Python/`: Python implementations, tests, design notes, and interview notes.
+- `docs/`: reusable interview method, diagram source files, and visual assets.
 
-```powershell
-git switch --track origin/feat/python-lld-patterns-suite
-```
+## Universal LLD flow
 
-Confirm you are on the feature branch and that the root package file is present:
+Clarify → Model entities → Draw relationships → Walk the use case → Design classes → Apply SOLID → Add patterns when justified → Test edge cases → Explain trade-offs.
 
-```powershell
-git branch --show-current
-Test-Path .\package.json
-```
+## Working principles
 
-## Run Python tests (Windows PowerShell)
+- Model domain rules before choosing frameworks.
+- Keep domain logic independent from IO where practical.
+- Prefer explicit invariants and intent-focused methods.
+- Treat concurrency, retries, and partial failure as first-class design concerns.
+- Use diagrams as communication aids, not substitutes for explaining trade-offs.
+- Keep examples simple enough to understand and test.
 
-Use Python 3.12 for parity with CI. Python 3.14 may also work, but is newer than the CI runtime.
+See the TypeScript root scripts and `Python/README.md` for setup and test commands.
 
-```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r Python/requirements-dev.txt --index-url https://pypi.org/simple
-```
 
-Run every Python pattern's tests separately (isolation avoids module-name collisions):
+## Interview learning guides
 
-```powershell
-$testDirs = Get-ChildItem .\Python -Directory | Where-Object { Test-Path (Join-Path $_.FullName 'tests') }
-if (-not $testDirs) { throw 'No Python test suites found.' }
-foreach ($dir in $testDirs) {
-    Write-Host "`n=== Testing $($dir.Name) ===" -ForegroundColor Cyan
-    Push-Location $dir.FullName
-    try {
-        python -m pytest tests -v
-        if ($LASTEXITCODE -ne 0) { throw "Tests failed in $($dir.Name)" }
-    }
-    finally {
-        Pop-Location
-    }
-}
-```
-
-To run one pattern, for example:
-
-```powershell
-Push-Location .\Python\rate-limiter
-python -m pytest tests -v
-Pop-Location
-```
-
-## Run TypeScript tests
-
-Run these commands from the repository root on the feature branch (where `package.json` exists):
-
-```powershell
-npm install
-npm test
-```
-
-## GitHub Actions
-
-The CI workflow runs Python pattern suites independently and runs the TypeScript Jest suite on pull requests to `main` and pushes to `main` or the feature branch.
-
-Workflow: [Actions](https://github.com/luckyhegde6/LLD_patterns/actions)
+- [LLD problem-solving playbook](docs/LLD_INTERVIEW_PROBLEM_SOLVING.md) — clarification, entities, relationships, class design, SOLID, patterns and edge cases.
+- [Pattern-by-pattern interview guides](docs/pattern-guides/README.md) — all 16 systems with Mermaid class/sequence diagrams, questions, design rationale and edge-case checklists.
