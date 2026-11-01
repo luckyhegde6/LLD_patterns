@@ -28,7 +28,7 @@ export class MCPAdapter {
  if(method==="tools/call"){const args=params.arguments??{};try{let value:any;
  if(params.name==="scheduler.schedule"){const taskId=this.scheduler.schedule(args.runAt,args.payload,{priority:args.priority,maxAttempts:args.maxAttempts});value={taskId,status:"PENDING"};}
  else if(params.name==="scheduler.list")value=this.store.list();
- else if(params.name==="scheduler.run_due"){const worker=new Worker(this.store,new TaskExecutor(),new RetryPolicy(3,100),new InMemoryLockManager(),this.clock);await worker.poll();value={polled:true};}
+ else if(params.name==="scheduler.run_due"){const executor={execute:async()=>undefined} as TaskExecutor;const worker=new Worker(this.store,executor,new RetryPolicy(3,100),new InMemoryLockManager(),this.clock);await worker.poll();value={polled:true};}
  else if(params.name==="runtime.tools.list")value=this.runtime.registryList();
  else if(params.name==="runtime.tools.execute"){const r=await this.runtime.execute({id:randomUUID(),name:args.name,arguments:args.arguments,actor:args.actor,permissions:args.permissions});value=r;}
  else return error(-32602,"unknown tool");
