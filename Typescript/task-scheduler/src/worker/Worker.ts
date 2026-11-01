@@ -23,7 +23,7 @@ export class Worker {
         const tasks = this.store.claimDueTasks(now, this.batchSize, this.leaseMs);
 
         for (const task of tasks) {
-            if (!this.lock.acquire(task.id)) {
+            if (!await this.lock.acquire(task.id)) {
                 task.status = TaskStatus.PENDING;
                 task.leaseUntil = undefined;
                 this.store.update(task);
@@ -47,7 +47,7 @@ export class Worker {
                     this.store.update(task); // retain failed task as a dead-letter record
                 }
             } finally {
-                this.lock.release(task.id);
+                await this.lock.release(task.id);
             }
         }
     }
