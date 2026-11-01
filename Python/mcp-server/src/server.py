@@ -13,10 +13,10 @@ TOOLS=[
  {"name":"scheduler.list","description":"List scheduled tasks","inputSchema":{"type":"object","properties":{},"additionalProperties":False}},
  {"name":"scheduler.run_due","description":"Execute due tasks once (reference handler returns payload)","inputSchema":{"type":"object","properties":{"now":{"type":"number"}},"required":["now"],"additionalProperties":False}},
  {"name":"runtime.tools.list","description":"List registered agent tools","inputSchema":{"type":"object","properties":{},"additionalProperties":False}},
- {"name":"runtime.tools.execute","description":"Execute a registered tool through policy and audit","inputSchema":{"type":"object","properties":{"name":{"type":"string"},"arguments":{"type":"object"},"actor":{"type":"string"},"permissions":{"type":"array","items":{"type":"string"}}},"required":["name","arguments","actor","permissions"],"additionalProperties":False}}
+ {"name":"runtime.tools.execute","description":"Execute a registered tool through policy and audit","inputSchema":{"type":"object","properties":{"name":{"type":"string"},"arguments":{"type":"object"},"actor":{"type":"string"},},"required":["name","arguments","actor"],"additionalProperties":False}}
 ]
 class MCPAdapter:
- def __init__(self,scheduler:Scheduler,runtime:ToolRuntime):self.scheduler=scheduler;self.runtime=runtime
+ def __init__(self,scheduler:Scheduler,runtime:ToolRuntime,permission_resolver=None):self.scheduler=scheduler;self.runtime=runtime;self.permission_resolver=permission_resolver or (lambda actor:set())
  def handle(self,msg:dict[str,Any]):
   method=msg.get("method");params=msg.get("params") or {};req_id=msg.get("id")
   def result(value):return {"jsonrpc":"2.0","id":req_id,"result":value}
@@ -44,7 +44,7 @@ class MCPAdapter:
     elif name=="scheduler.run_due":value=self.scheduler.run_due(args["now"],lambda t:t.payload)
     elif name=="runtime.tools.list":value=self.runtime._registry.list()
     elif name=="runtime.tools.execute":
-     call=ToolCall(args["name"],args["arguments"],str(uuid.uuid4()),args["actor"],frozenset(args["permissions"]))
+     call=ToolCall(args["name"],args["arguments"],str(uuid.uuid4()),args["actor"],frozenset(self.permission_resolver(args["actor"])))
      r=self.runtime.execute(call);value={"ok":r.ok,"value":r.value,"error":r.error}
     else:return error(-32602,"unknown tool")
     return result({"content":[{"type":"text","text":json.dumps(value,default=str)}],"structuredContent":value})
