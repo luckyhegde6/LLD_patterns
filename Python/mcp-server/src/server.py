@@ -68,7 +68,7 @@ def main():
  for line in sys.stdin:
   try:
    msg=json.loads(line);response=adapter.handle(msg)
-   if response is not None:sys.stdout.write(json.dumps(response,separators=(",",":"))+"\n");sys.stdout.flush()
+   if response is not None:sys.stdout.write(json.dumps(response,separators=(",",":"))+"\\n");sys.stdout.flush()
   except Exception:
-   sys.stdout.write(json.dumps({"jsonrpc":"2.0","id":None,"error":{"code":-32700,"message":"parse error"}})+"\n");sys.stdout.flush()
+   sys.stdout.write(json.dumps({"jsonrpc":"2.0","id":None,"error":{"code":-32700,"message":"parse error"}})+"\\n");sys.stdout.flush()
 if __name__=="__main__":main()
