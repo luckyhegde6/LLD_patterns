@@ -2,6 +2,12 @@
 
 **Problem:** Evaluate flags with targeting, rollout and safe defaults.
 
+## Visual walkthrough
+
+![Feature Flag System visual walkthrough](../assets/feature-flag-system-visual.svg)
+
+Evaluation combines flag configuration with user/context attributes, then returns a deterministic decision and reason for observability.
+
 ## Clarifying questions
 - Flag types?
 - Trusted attributes?
