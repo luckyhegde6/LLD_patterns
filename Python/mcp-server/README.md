@@ -1,10 +1,15 @@
 # MCP Server (Python)
 
-A stdio JSON-RPC MCP adapter exposing scheduler tools and runtime tools/resources.
+Minimal stdio JSON-RPC MCP adapter exposing scheduler and agent-runtime tools/resources.
 
-Run from `Python/mcp-server` with `python -m src.server` after the Python packages are installed. MCP protocol messages are newline-delimited JSON on stdin/stdout; do not write logs to stdout.
+Run from this folder:
+```bash
+python -m src.server
+```
+
+The demo registers an `echo` tool. The server-side permission resolver grants its permission only to actor `demo-agent`; caller-supplied permissions are not accepted.
 
 Tools: `scheduler.schedule`, `scheduler.list`, `scheduler.run_due`, `runtime.tools.list`, `runtime.tools.execute`.
 Resources: `scheduler://tasks`, `runtime://tools`, `runtime://audit`.
 
-This is a compact protocol adapter for learning. Production deployments should use the official MCP SDK, transport authentication where applicable, persistent stores and policy-backed actor identity.
+The adapter supports stdio JSON-RPC discovery/calls. It is a compact learning implementation; production should use the official MCP SDK and add transport authentication, durable state and policy-derived identity.
