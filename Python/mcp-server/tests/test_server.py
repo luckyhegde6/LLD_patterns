@@ -1,6 +1,9 @@
-from src.server import MCPAdapter
-from src.scheduler import Scheduler
-from src.runtime import ToolRegistry,ToolRuntime,AllowAllPolicy,InMemoryAuditSink
+from src.server import MCPAdapter, _scheduler, _runtime
+Scheduler=_scheduler.Scheduler
+ToolRegistry=_runtime.ToolRegistry
+ToolRuntime=_runtime.ToolRuntime
+AllowAllPolicy=_runtime.AllowAllPolicy
+InMemoryAuditSink=_runtime.InMemoryAuditSink
 
 def test_mcp_initialize_tools_and_schedule_resource():
  a=MCPAdapter(Scheduler(),ToolRuntime(ToolRegistry(),AllowAllPolicy(),InMemoryAuditSink()))
