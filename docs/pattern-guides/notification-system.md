@@ -2,6 +2,12 @@
 
 **Problem:** Deliver notifications through channels with preferences, templates and retries.
 
+## Visual walkthrough
+
+![Notification System visual walkthrough](../assets/notification-system-visual.svg)
+
+The orchestrator applies preferences and templates, then dispatches per-channel jobs. Retries, deduplication and provider feedback shape delivery state.
+
 ## Clarifying questions
 - Which channels?
 - Transactional or best-effort?

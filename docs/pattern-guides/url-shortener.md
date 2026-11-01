@@ -2,6 +2,12 @@
 
 **Problem:** Create compact links and resolve redirects with expiry/alias/abuse controls.
 
+## Visual walkthrough
+
+![Url Shortener visual walkthrough](../assets/url-shortener-visual.svg)
+
+Creation stores a unique key-to-URL mapping; reads resolve the key and redirect. Collision handling, expiry and abuse controls are important.
+
 ## Clarifying questions
 - Custom alias?
 - Expiry/disable?

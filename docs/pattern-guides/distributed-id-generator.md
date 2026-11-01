@@ -2,6 +2,12 @@
 
 **Problem:** Generate unique IDs across nodes with ordering and throughput requirements.
 
+## Visual walkthrough
+
+![Distributed Id Generator visual walkthrough](../assets/distributed-id-generator-visual.svg)
+
+A Snowflake-style ID combines time, worker identity and a per-time-unit sequence. Worker coordination and clock rollback are key correctness concerns.
+
 ## Clarifying questions
 - Unique vs sortable?
 - IDs/sec and nodes?

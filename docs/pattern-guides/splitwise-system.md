@@ -2,6 +2,12 @@
 
 **Problem:** Track group expenses and calculate balances/settlements.
 
+## Visual walkthrough
+
+![Splitwise System visual walkthrough](../assets/splitwise-system-visual.svg)
+
+Expense splits produce pairwise net balances. Settlement simplification reduces transfers while preserving each participant’s net position.
+
 ## Clarifying questions
 - Split types?
 - Currency/rounding?

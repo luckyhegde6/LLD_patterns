@@ -2,6 +2,12 @@
 
 **Problem:** Route requests and apply edge policies.
 
+## Visual walkthrough
+
+![Api Gateway visual walkthrough](../assets/api-gateway-visual.svg)
+
+Gateway centralizes cross-cutting checks before forwarding; routing and policy failures should be distinguishable from upstream errors.
+
 ## Clarifying questions
 - Routing by path/host?
 - Auth at edge?

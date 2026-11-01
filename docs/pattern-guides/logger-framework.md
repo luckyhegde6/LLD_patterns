@@ -2,6 +2,12 @@
 
 **Problem:** Structured logging with levels, context and pluggable sinks.
 
+## Visual walkthrough
+
+![Logger Framework visual walkthrough](../assets/logger-framework-visual.svg)
+
+Loggers filter by level, enrich and format events, then send them to appenders. Async appenders need bounded queues and backpressure.
+
 ## Clarifying questions
 - Levels/filter?
 - JSON/text?

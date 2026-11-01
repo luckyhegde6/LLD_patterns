@@ -2,6 +2,12 @@
 
 **Problem:** Dispatch elevators balancing wait, direction and capacity.
 
+## Visual walkthrough
+
+![Elevator System visual walkthrough](../assets/elevator-system-visual.svg)
+
+The dispatcher assigns requests; each car controller orders stops and manages movement/door states. Safety interlocks outrank optimization.
+
 ## Clarifying questions
 - Elevators/floors/zones?
 - Hall vs car calls?

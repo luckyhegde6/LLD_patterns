@@ -2,6 +2,12 @@
 
 **Problem:** Hold inventory, accept payment and confirm bookings.
 
+## Visual walkthrough
+
+![Ticket Booking visual walkthrough](../assets/ticket-booking-visual.svg)
+
+A temporary hold prevents double booking while payment runs. Expiry and payment outcomes must safely confirm or release seats.
+
 ## Clarifying questions
 - Assigned or GA?
 - Hold duration?

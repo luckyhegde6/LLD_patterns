@@ -2,6 +2,12 @@
 
 **Problem:** Authorize, capture, refund and reconcile through providers.
 
+## Visual walkthrough
+
+![Payment Processing visual walkthrough](../assets/payment-processing-visual.svg)
+
+Treat payment as a state machine. Provider calls use idempotency keys; asynchronous webhooks and reconciliation resolve uncertain outcomes.
+
 ## Clarifying questions
 - Auth/capture separate?
 - Methods/providers?
