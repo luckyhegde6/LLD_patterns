@@ -49,7 +49,7 @@ class ToolRegistry:
         if not spec.name.strip() or spec.name in self._tools:raise ValueError("tool name must be unique and non-empty")
         if spec.timeout_seconds<=0 or spec.max_attempts<1:raise ValueError("invalid execution bounds")
         self._tools[spec.name]=spec
-    def get(self,name):return self._tools.get(name)
+    def get(self,name):return self._tools.get(name)\n    def list(self):return [{"name":s.name,"description":s.description,"inputSchema":s.input_schema,"requiredPermissions":sorted(s.required_permissions)} for s in self._tools.values()]
     def list(self):return [{"name":s.name,"description":s.description,"inputSchema":s.input_schema,"requiredPermissions":sorted(s.required_permissions)} for s in self._tools.values()]
 class ToolRuntime:
     def __init__(self,registry,policy,audit):self._registry=registry;self._policy=policy;self._audit=audit
