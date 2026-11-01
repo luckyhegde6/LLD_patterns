@@ -1,61 +1,28 @@
-# Task Scheduler / Cron System
+# Task Scheduler / Delayed Job System
 
-## Interview Framing
+## Responsibilities
+| Component | Responsibility |
+|---|---|
+| Scheduler | Validate and accept typed task definitions |
+| TaskStore | Persist tasks and atomically claim due work |
+| Worker | Execute claimed tasks and apply state transitions |
+| Executor | Run task handler logic |
+| RetryPolicy | Capped exponential retry delays |
+| LockManager | Local lock adapter; distributed correctness belongs in the store |
+| Clock | Deterministic time in tests |
 
-Design a system that can schedule tasks to run at a specific time or repeatedly (cron), execute them reliably, retry on failure, and avoid duplicate execution in a distributed system.
+## Implemented in this module
+- Typed payloads, priority and max attempts
+- Due-task claims with leases and expiry-based reclaim
+- Successful task cleanup
+- Retry scheduling and retained FAILED records
+- In-memory adapter and deterministic unit tests
 
-## Core Responsibilities
-```
-| Component   | Responsibility                |
-| ----------- | ----------------------------- |
-| Scheduler   | Accepts task definitions      |
-| TaskStore   | Persists tasks                |
-| Executor    | Executes task logic           |
-| Clock       | Determines when tasks are due |
-| RetryPolicy | Handles failures              |
-| LockManager | Prevents duplicate execution  |
-| Worker      | Polls and executes due tasks  |
+## Not yet implemented
+- Durable database store
+- Redis queue or distributed lock adapter
+- Lease renewal/fencing tokens
+- Cron/recurring schedules
+- Cancellation, deduplication, metrics and graceful shutdown
 
-```
-
-## Key Design Decisions
-Persistent tasks (crash-safe)
-
-Idempotent execution
-
-Retry with backoff
-
-Distributed lock before execution
-
-At-least-once execution + de-duplication
-
-## Final Repo Structure
-```
-task-scheduler/
-├── src/
-│   ├── core/
-│   │   ├── Task.ts
-│   │   ├── TaskStatus.ts
-│   │   └── Scheduler.ts
-│   ├── store/
-│   │   ├── TaskStore.ts
-│   │   └── InMemoryTaskStore.ts
-│   ├── executor/
-│   │   └── TaskExecutor.ts
-│   ├── retry/
-│   │   └── RetryPolicy.ts
-│   │   ├── LockManager.ts
-│   │   └── InMemoryLockManager.ts
-│   └── worker/
-│       └── Worker.ts
-├── tests/
-│   ├── scheduler.test.ts
-│   └── retry.test.ts
-├── DESIGN.md
-├── INTERVIEW.md
-├── TASK_SCHEDULER_EXPLAINED_LIKE_IM_5.md
-├── TASK_SCHEDULER_WHITEBOARD_30SEC_MOCK.md
-├── README.md
-└── package.json
-
-```
+The in-memory implementation demonstrates the state machine; it is not a distributed production scheduler.
