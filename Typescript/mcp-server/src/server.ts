@@ -12,10 +12,10 @@ export const MCP_TOOLS=[
 {name:"scheduler.list",description:"List scheduled tasks",inputSchema:{type:"object",properties:{},additionalProperties:false}},
 {name:"scheduler.run_due",description:"Claim and execute due tasks",inputSchema:{type:"object",properties:{},additionalProperties:false}},
 {name:"runtime.tools.list",description:"List registered agent tools",inputSchema:{type:"object",properties:{},additionalProperties:false}},
-{name:"runtime.tools.execute",description:"Execute a registered tool through policy and audit",inputSchema:{type:"object",properties:{name:{type:"string"},arguments:{type:"object"},actor:{type:"string"},permissions:{type:"array",items:{type:"string"}}},required:["name","arguments","actor","permissions"],additionalProperties:false}}
+{name:"runtime.tools.execute",description:"Execute a registered tool through policy and audit",inputSchema:{type:"object",properties:{name:{type:"string"},arguments:{type:"object"},actor:{type:"string"},},required:["name","arguments","actor"],additionalProperties:false}}
 ];
 export class MCPAdapter {
- constructor(private scheduler:Scheduler,private store:TaskStore,private runtime:ToolRuntime,private clock:Clock={now:()=>Date.now()}){}
+ constructor(private scheduler:Scheduler,private store:TaskStore,private runtime:ToolRuntime,private clock:Clock={now:()=>Date.now()},private permissionResolver:(actor:string)=>string[]=()=>[]){}
  async handle(message:any):Promise<any|null>{
  const method=message?.method,params=message?.params??{},id=message?.id;
  const result=(value:any)=>({jsonrpc:"2.0",id,result:value}),error=(code:number,message:string)=>({jsonrpc:"2.0",id,error:{code,message}});
@@ -30,7 +30,7 @@ export class MCPAdapter {
  else if(params.name==="scheduler.list")value=this.store.list();
  else if(params.name==="scheduler.run_due"){const executor={execute:async()=>undefined} as TaskExecutor;const worker=new Worker(this.store,executor,new RetryPolicy(3,100),new InMemoryLockManager(),this.clock);await worker.poll();value={polled:true};}
  else if(params.name==="runtime.tools.list")value=this.runtime.registryList();
- else if(params.name==="runtime.tools.execute"){const r=await this.runtime.execute({id:randomUUID(),name:args.name,arguments:args.arguments,actor:args.actor,permissions:args.permissions});value=r;}
+ else if(params.name==="runtime.tools.execute"){const r=await this.runtime.execute({id:randomUUID(),name:args.name,arguments:args.arguments,actor:args.actor,permissions:this.permissionResolver(args.actor)});value=r;}
  else return error(-32602,"unknown tool");
  return result({content:[{type:"text",text:JSON.stringify(value)}],structuredContent:value});
  }catch(e){return result({isError:true,content:[{type:"text",text:e instanceof Error?e.message:"tool failed"}]});}}
