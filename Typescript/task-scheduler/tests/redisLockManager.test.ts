@@ -1,0 +1,2 @@
+import {RedisLockManager} from "../src/retry/RedisLockManager";
+test("uses token-owned Redis lock and compare-delete release",async()=>{const set=jest.fn().mockResolvedValue("OK"),evalFn=jest.fn().mockResolvedValue(1);const manager=new RedisLockManager({set,eval:evalFn},5000,"test:");expect(await manager.acquire("job")).toBe(true);expect(set).toHaveBeenCalledWith("test:job",expect.any(String),"PX",5000,"NX");await manager.release("job");expect(evalFn).toHaveBeenCalledWith(expect.stringContaining("ARGV[1]"),1,"test:job",expect.any(String));});

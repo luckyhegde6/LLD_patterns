@@ -1,18 +1,13 @@
 # Task Scheduler — Design Notes
 
-## Problem
-Task lifecycle with due-time execution, retry/backoff and idempotency.
+## Core flow
+Schedule delayed task → atomically claim due work → execute → complete, retry with capped backoff, or retain terminal failure in the dead-letter map.
 
-## AI-agent / FDE considerations
-Use durable lease claims and checkpoints in production. Agent tool actions need action-level idempotency and explicit approval-wait states.
+## Components
+- Task: due time, priority, attempts, status and lease owner.
+- Scheduler: idempotent schedule-by-ID, ordered claim, retry and DLQ transition.
+- WorkerManager: background polling lifecycle and deterministic poll-once hook.
+- LockManager: process-local adapter and Redis SET NX PX + token-checked release adapter.
 
-## Production evolution
-- Keep core domain logic framework-agnostic; put DB, HTTP, queue and provider integrations behind adapters.
-- Add authentication, authorization, tenant isolation, validation, auditability and resource budgets.
-- Treat external responses and model output as untrusted data.
-- Add deadlines, cancellation, backpressure and retries only where idempotency makes retries safe.
-- Replace process-local memory and locks with durable transactions/shared coordination before horizontal scaling.
-- Measure customer outcomes, adoption, latency, reliability, saturation and cost.
-
-## Guarantees and limitations
-This package is an interview-sized deterministic baseline. In-memory state is lost on restart and is not shared across processes. Distributed correctness requires production adapters, operational controls and failure testing.
+## Guarantees / limitations
+In-memory claim state is process-local and lost on restart. Redis locking is a coordination adapter, not a replacement for transactional task claims. Production needs a durable store, fencing/lease renewal, handler idempotency, retry jitter, graceful shutdown and metrics.

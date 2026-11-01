@@ -1,0 +1,2 @@
+import {WorkerManager} from "../src/worker/WorkerManager";
+test("worker manager starts, polls and stops",async()=>{const poll=jest.fn().mockResolvedValue(undefined);const manager=new WorkerManager([{poll} as any]);expect(manager.isRunning).toBe(false);await manager.pollOnce();expect(poll).toHaveBeenCalledTimes(1);manager.start(1000);expect(manager.isRunning).toBe(true);manager.stop();expect(manager.isRunning).toBe(false);});

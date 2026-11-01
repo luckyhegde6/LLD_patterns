@@ -23,7 +23,7 @@ export class Worker {
         const tasks = this.store.claimDueTasks(now, this.batchSize, this.leaseMs);
 
         for (const task of tasks) {
-            if (!this.lock.acquire(task.id)) {
+            if (!await this.lock.acquire(task.id)) {
                 task.status = TaskStatus.PENDING;
                 task.leaseUntil = undefined;
                 this.store.update(task);
@@ -38,7 +38,7 @@ export class Worker {
                 task.lastError = error instanceof Error ? error.message : String(error);
                 task.leaseUntil = undefined;
 
-                if (task.attempts < task.maxAttempts && this.retry.canRetry(task.attempts)) {
+                if (task.attempts < task.maxAttempts) {
                     task.status = TaskStatus.PENDING;
                     task.runAt = this.retry.nextRunTime(task.attempts, this.clock.now());
                     this.store.update(task);
@@ -47,7 +47,7 @@ export class Worker {
                     this.store.update(task); // retain failed task as a dead-letter record
                 }
             } finally {
-                this.lock.release(task.id);
+                await this.lock.release(task.id);
             }
         }
     }
