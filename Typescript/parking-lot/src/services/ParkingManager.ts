@@ -9,7 +9,8 @@ export class ParkingManager {
     constructor(
         private spotRepo: SpotRepository,
         private ticketRepo: TicketRepository,
-        private pricing: PricingPolicy
+        private pricing: PricingPolicy,
+        private now: () => Date = () => new Date()
     ) { }
 
     park(vehicle: Vehicle, spotType: SpotType): Ticket {
@@ -21,7 +22,7 @@ export class ParkingManager {
             crypto.randomUUID(),
             vehicle.id,
             spot.id,
-            new Date()
+            this.now()
         );
         this.ticketRepo.create(ticket);
         return ticket;
@@ -31,7 +32,7 @@ export class ParkingManager {
         const ticket = this.ticketRepo.find(ticketId);
         if (!ticket) throw new Error("Invalid ticket");
 
-        ticket.exitTime = new Date();
+        ticket.exitTime = this.now();
         this.spotRepo.markFree(ticket.spotId);
         return this.pricing.calculate(ticket.entryTime, ticket.exitTime);
     }
