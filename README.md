@@ -29,3 +29,9 @@ Clarify → Model entities → Draw relationships → Walk the use case → Desi
 - Keep examples simple enough to understand and test.
 
 See the TypeScript root scripts and `Python/README.md` for setup and test commands.
+
+
+## Interview learning guides
+
+- [LLD problem-solving playbook](docs/LLD_INTERVIEW_PROBLEM_SOLVING.md) — clarification, entities, relationships, class design, SOLID, patterns and edge cases.
+- [Pattern-by-pattern interview guides](docs/pattern-guides/README.md) — all 16 systems with Mermaid class/sequence diagrams, questions, design rationale and edge-case checklists.
