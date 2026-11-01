@@ -17,8 +17,6 @@ This playbook teaches a repeatable way to take an ambiguous object-oriented desi
 9. Challenge the design with edge cases, failures, and concurrency.
 10. Summarise trade-offs and possible next evolutions.
 
-![LLD interview workflow](assets/lld-interview-workflow.png)
-
 ## 1. Clarify before designing
 
 Spend the first few minutes narrowing the problem. Ask questions that change the model, invariants, or complexity—not questions whose answers do not affect your design.
