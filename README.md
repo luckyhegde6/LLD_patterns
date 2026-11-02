@@ -32,6 +32,13 @@ See the TypeScript root scripts and `Python/README.md` for setup and test comman
 
 ## Interview learning guides
 
+## New senior-level implementation exercises
+
+- [Workflow Orchestrator](Typescript/workflow-orchestrator/README.md) — sequential saga execution, checkpoints and reverse compensation (TypeScript + Python).
+- [Webhook Delivery](Typescript/webhook-delivery/README.md) — HMAC signatures, retries, idempotent delivery and DLQ boundaries (TypeScript + Python).
+
+
+
 - [LLD problem-solving playbook](docs/LLD_INTERVIEW_PROBLEM_SOLVING.md) — clarification, entities, relationships, class design, SOLID, patterns and edge cases.
 - [Pattern-by-pattern interview guides](docs/pattern-guides/README.md) — all 16 systems with Mermaid class/sequence diagrams, questions, design rationale and edge-case checklists.
 
