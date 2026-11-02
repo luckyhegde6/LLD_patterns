@@ -32,5 +32,10 @@ python -m pytest Python -v
 9. Notification system — human-in-the-loop approvals and delivery.
 10. Ticket booking / payment / parking lot — transactions and concurrency.
 
+## New senior-level implementation exercises
+
+- [Workflow Orchestrator](workflow-orchestrator/README.md) — sequential saga, checkpoints and compensation.
+- [Webhook Delivery](webhook-delivery/README.md) — HMAC signing, retries, deduplication and DLQ boundaries.
+
 ## FDE interview lens
 For every project explain customer problem and success metric; requirements and constraints; integration surface; failure modes; security/privacy; latency/cost; rollout and observability; adoption feedback; trade-offs; and production operations.
