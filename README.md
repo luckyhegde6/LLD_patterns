@@ -46,3 +46,8 @@ See the TypeScript root scripts and `Python/README.md` for setup and test comman
 
 - [Agentic Coding, LLD Prompting and Fine-Tuning Guide](docs/AGENTIC_CODING_GUIDELINES.md) — coding harness workflow, safe tool use, prompt templates for adapting LLDs, and evaluation-first fine-tuning guidance.
 - [Agent Platform: Scheduler, Tool Runtime and MCP](docs/AGENT_PLATFORM.md) — matching Python and TypeScript implementations with tests and documented production boundaries.
+
+
+## Modern platform LLD exercises
+
+See [Modern Platform LLD Catalog](docs/MODERN_PLATFORM_LLD_CATALOG.md) for TypeScript and Python exercises covering YouTube, WhatsApp, Twitter/X, Instagram, Uber/Rapido, food delivery, Netflix, Google Drive, Google Maps, search autocomplete, distributed logging and notification delivery. Each exercise includes a domain model, state lifecycle, patterns, implementation direction and test scenarios.
