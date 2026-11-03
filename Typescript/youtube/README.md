@@ -80,3 +80,13 @@ Suggested files: `domain/aggregate.ts, application/service.ts, ports.ts, tests/a
 - Where is State, Strategy, Adapter, Observer or Repository justified?
 - How do you prevent two concurrent commands from both winning?
 - What is the smallest design that satisfies the requirements?
+
+
+## Additional exercise notes from the duplicate TypeScript folder
+
+Use the upload-session workflow as the focused implementation boundary. Model `UploadSession`, `Video`, `Rendition` and `PlaybackSession`; keep publication blocked until all required renditions are ready. Treat resumable chunk completion and finalization as idempotent commands.
+
+### Additional test cases
+- Reject publishing while required renditions are missing.
+- Resume an upload after a client disconnects without re-uploading committed chunks.
+- Reject duplicate chunk/finalize requests without creating duplicate effects.
