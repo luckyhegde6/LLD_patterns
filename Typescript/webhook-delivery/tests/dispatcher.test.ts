@@ -1,4 +1,3 @@
-import { describe, expect, it, jest } from "@jest/globals";
 import { WebhookDispatcher, type HttpClient, type Delivery } from "../src";
 
 const webhook = { id: "w1", url: "https://example.test/hook", secret: "secret" };
@@ -15,7 +14,7 @@ describe("WebhookDispatcher", () => {
   const save = jest.fn(async () => {});
   const result = await new WebhookDispatcher({ post } as unknown as HttpClient, { save }).deliver(webhook, event, makeDelivery());
   expect(result.status).toBe("DELIVERED");
-  expect(save).toHaveBeenCalledOnce();
+  expect(save).toHaveBeenCalledTimes(1);
  });
  it("moves non-2xx delivery to retry wait", async () => {
   const client = { post: jest.fn(async () => ({ status: 503 })) } as unknown as HttpClient;
